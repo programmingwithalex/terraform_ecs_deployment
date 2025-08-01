@@ -1,6 +1,45 @@
-# terraform_ecs_deployment
+<a id="readme-top"></a>
 
-Use Terraform to deploy app on AWS ECS.
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![BSD-3-Clause License][license-shield]][license-url]
+
+---
+
+<br/>
+<div align="center">
+
+© 2025 [GitHub@programmingwithalex](https://github.com/programmingwithalex)
+
+### Terraform Deployment of App on AWS ECS Fargate
+
+Use Terraform to deploy on AWS ECS Fargate with AWS networking.
+
+[Report Bug](https://github.com/programmingwithalex/terraform_ecs_deployment/issues/new?labels=bug&template=bug-report---.md) · [Request Feature](https://github.com/programmingwithalex/terraform_ecs_deployment/issues/new?labels=enhancement&template=feature-request---.md)
+
+</div>
+<br/>
+
+# Project Overview
+
+Will deploy app on AWS ECS Fargate with the following components:
+
+* Application Load Balancer (ALB)
+* ECS Cluster, Service, and Task Definition
+* CloudWatch Monitoring
+* ECS Auto Scaling
+* Networking - VPC, IGW, NAT, and private subnets for ECS
+* Security Groups
+
+---
+
+## Prerequisites
+
+* [terraform](https://developer.hashicorp.com/terraform/install)
+
+---
 
 ## Getting Stated
 
@@ -8,13 +47,15 @@ Use Terraform to deploy app on AWS ECS.
 2. `terraform apply` to create infrastructure
 3. `terraform destroy` to delete infrastructure
 
-## Terraform Setup
+## Additional Notes
+
+### Terraform Setup
 
 * download from [terraform install link](https://developer.hashicorp.com/terraform/install)
 * unzip and add folder to Path
   * will allow using `terraform` commands from command line
 
-## Terraform Commands
+### Terraform Commands
 
 | Command             | Description                                                        |
 |---------------------|--------------------------------------------------------------------|
@@ -28,7 +69,7 @@ Use Terraform to deploy app on AWS ECS.
 | `terraform state list` | *list of the resources in your project's state*                    |
 | `terraform output`     | *print outputs from `output.tf`*                                   |
 
-### `terraform apply`
+#### `terraform apply`
 
 * running will generate `terraform.tfstate`
   * IDs and properties of resources it manages - can update or destroy those resources going forward
@@ -37,7 +78,7 @@ Use Terraform to deploy app on AWS ECS.
 
 * if make any changes to terraform files, run `terraform apply` to apply changes
 
-## Terraform Variables
+### Terraform Variables
 
 * `variables.tf`
 
@@ -63,11 +104,11 @@ resource "docker_container" "nginx" {
 }
 ```
 
-### Overriding Terraform Variables in CLI
+#### Overriding Terraform Variables in CLI
 
 `terraform apply -var "container_name=YetAnotherName"`
 
-## Terraform Files
+### Terraform Files
 
 | File                  | Purpose                                                                 |
 |-----------------------|-------------------------------------------------------------------------|
@@ -77,10 +118,21 @@ resource "docker_container" "nginx" {
 | `terraform.tfvars`    | Provides actual values for variables; can have multiple files per environment |
 | `main.tf`             | Core infrastructure definitions; can be split into components like `alb.tf`, `vpc.tf`, etc. |
 
-### `main.tf` vs Individual Component Files
+#### `main.tf` vs Individual Component Files
 
 * Can put all component definitions into `main.tf` but common practice is to separate into individual component files (`alb.tf`, `vpc.tf`, etc.)
 * Terraform automatically loads and combines all `.tf` files in same directory as single configuration
   * don't need to explicitly import or include files
 * Don't need to manage dependencies
   * Terraform automatically creates dependency graph based on resource references
+
+[contributors-shield]: https://img.shields.io/github/contributors/programmingwithalex/terraform_ecs_deployment?style=for-the-badge
+[contributors-url]: https://github.com/programmingwithalex/terraform_ecs_deployment/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/programmingwithalex/terraform_ecs_deployment?style=for-the-badge
+[forks-url]: https://github.com/programmingwithalex/terraform_ecs_deployment/network/members
+[stars-shield]: https://img.shields.io/github/stars/programmingwithalex/terraform_ecs_deployment?style=for-the-badge
+[stars-url]: https://github.com/programmingwithalex/terraform_ecs_deployment/stargazers
+[issues-shield]: https://img.shields.io/github/issues/programmingwithalex/terraform_ecs_deployment?style=for-the-badge
+[issues-url]: https://github.com/programmingwithalex/terraform_ecs_deployment/issues
+[license-shield]: https://img.shields.io/github/license/programmingwithalex/terraform_ecs_deployment.svg?style=for-the-badge
+[license-url]: https://github.com/programmingwithalex/terraform_ecs_deployment/blob/main/LICENSE
