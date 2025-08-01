@@ -45,7 +45,13 @@ Will deploy app on AWS ECS Fargate with the following components:
 
 1. In top-level directory run `terraform init` to initialize working directory and download plugins.
 2. `terraform apply` to create infrastructure
+   1. To specify whether to run with `dev` or `prod` variables, use one of the following commands:
+      1. `terraform apply -var-file="terraform.tfvars.dev"`
+      2. `terraform apply -var-file="terraform.tfvars.prod"`
 3. `terraform destroy` to delete infrastructure
+   1. To specify whether to run with `dev` or `prod` variables, use one of the following commands:
+      1. `terraform destroy -var-file="terraform.tfvars.dev"`
+      2. `terraform destroy -var-file="terraform.tfvars.prod"`
 
 ## Additional Notes
 
@@ -136,3 +142,4 @@ resource "docker_container" "nginx" {
 [issues-url]: https://github.com/programmingwithalex/terraform_ecs_deployment/issues
 [license-shield]: https://img.shields.io/github/license/programmingwithalex/terraform_ecs_deployment.svg?style=for-the-badge
 [license-url]: https://github.com/programmingwithalex/terraform_ecs_deployment/blob/main/LICENSE
+
