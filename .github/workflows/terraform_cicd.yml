@@ -1,0 +1,68 @@
+name: Terraform CI/CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      TF_ENV:
+        description: 'Terraform environment (dev or prod)'
+        required: true
+        default: 'dev'
+
+env:
+  TF_VERSION: 1.8.0
+  AWS_REGION: us-east-1
+
+jobs:
+  terraform:
+    name: Terraform Plan & Apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      # - name: Terraform Format
+      #   run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Select tfvars file
+        id: envselect
+        run: |
+          # Use workflow input if provided, else default to dev/prod by branch
+          if [ -n "${{ github.event.inputs.TF_ENV }}" ]; then
+            ENV="${{ github.event.inputs.TF_ENV }}"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            ENV="prod"
+          else
+            ENV="dev"
+          fi
+          echo "TFVARS=terraform.tfvars.$ENV" >> $GITHUB_OUTPUT
+
+      - name: Terraform Plan
+        run: terraform plan -var-file="${{ steps.envselect.outputs.TFVARS }}"
+
+      - name: Terraform Apply (manual)
+        # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve -var-file="${{ steps.envselect.outputs.TFVARS }}"
+        env:
+          TF_IN_AUTOMATION: true
