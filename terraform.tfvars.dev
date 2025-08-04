@@ -5,5 +5,5 @@ app_image       = "nginx:latest"
 desired_count   = 1
 
 # Provide the ARNs for the ECS execution and task roles (update with your actual ARNs)
-ecs_execution_role_arn = "arn:aws:iam::XXXXXXXX:role/ecsTaskExecutionRole"
-ecs_task_role_arn      = "arn:aws:iam::XXXXXXXX:role/ecsTaskRole"
+ecs_execution_role_arn = "arn:aws:iam::212135963698:role/ecsTaskExecutionRole"
+ecs_task_role_arn      = "arn:aws:iam::212135963698:role/ecsTaskRole"

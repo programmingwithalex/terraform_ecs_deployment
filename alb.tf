@@ -2,14 +2,15 @@
 # Application Load Balancer
 ################################################################################
 resource "aws_alb" "alb" {
-  name               = "${var.project_name}-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = [for subnet in aws_subnet.public : subnet.id]
-  enable_deletion_protection = false  # otherwise, `terraform destroy` will fail if the ALB is in use
+  name                       = "${var.project_name}-alb"
+  internal                   = false
+  load_balancer_type         = "application"
+  security_groups            = [aws_security_group.lb_sg.id]
+  subnets                    = [for subnet in aws_subnet.public : subnet.id]
+  enable_deletion_protection = false # otherwise, `terraform destroy` will fail if the ALB is in use
+
   tags = {
-    Environment = "production"
+    Environment = var.environment
   }
 }
 
@@ -33,6 +34,7 @@ resource "aws_lb_target_group" "ecs_tg" {
   }
   tags = {
     Name = "${var.project_name}-tg"
+    Environment = var.environment
   }
 }
 
