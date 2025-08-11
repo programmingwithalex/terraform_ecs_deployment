@@ -100,3 +100,36 @@ resource "docker_container" "nginx" {
   * don't need to explicitly import or include files
 * Don't need to manage dependencies
   * Terraform automatically creates dependency graph based on resource references
+
+## Remote State Management with S3 and DynamoDB
+
+This project uses a remote backend for Terraform state management. The configuration in `terraform.tf` has been updated to use:
+
+- **S3 bucket** (`terraform-ecs-deployment-state-bucket`) for storing the Terraform state file
+- **DynamoDB table** (`terraform-ecs-deployment-lock-table`) for state locking to prevent concurrent operations
+
+Needed to ensure infrastructure state is centrally managed and accessible from both local and CI/CD environments.
+
+### DynamoDB Table Setup
+
+- The DynamoDB table must have a partition key named `LockID` of type String. No other columns required
+- Used for state locking, which prevents multiple Terraform operations from running at the same time and corrupting the state file
+
+### IAM Permissions
+
+IAM user permission requiremetns:
+
+- S3: `GetObject`, `PutObject`, `DeleteObject`, `ListBucket` on the state bucket
+- DynamoDB: `GetItem`, `PutItem`, `DeleteItem`, `DescribeTable` on the lock table
+
+Example in `iam_terraform_s3_dynamodb.json`
+
+### Usage
+
+After updating backend configuration, run:
+
+```
+terraform init
+```
+
+Will initialize the backend and migrate state to S3. All future Terraform operations will use the remote state
